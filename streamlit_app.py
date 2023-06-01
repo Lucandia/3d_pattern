@@ -87,7 +87,7 @@ if __name__ == "__main__":
     scad_args = '-o {cwd}file.stl'
     preview = st.checkbox('Quick render', help='Preview mode renders the models without performing boolean operation. It just renders your image/pattern and the border of the soap dish. It is faster than normal rendering, to understand the scaling of the image.')
     if preview:
-        run_file = cwd + 'preview.scad'
+        # run_file = cwd + 'preview.scad'
         scad_args = '-o {cwd}preview.png'
 
     uploaded_file = st.file_uploader("Upload the file:", type=[filetype])
