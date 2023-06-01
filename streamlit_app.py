@@ -121,7 +121,7 @@ if __name__ == "__main__":
             if preview:
                 subprocess.run(['Xvfb :99 & export DISPLAY=:99',
                                 'b=`basename preview`',
-                                f'openscad -o $b.png --imgsize=500,500 {run_file}'],
+                                f'openscad -o $b.png {run_file}'],
                                 shell = True)
             else:
                 subprocess.run(f'openscad {run_file} -o {cwd}file.stl', shell = True)
