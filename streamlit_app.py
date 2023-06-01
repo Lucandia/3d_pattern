@@ -74,9 +74,24 @@ if __name__ == "__main__":
     #       os.remove(file)
     #if 'preview.png' in os.listdir():
     #    os.remove('preview.png')
+    
+    # Input type 
     filetype = st.selectbox('Choose the file type', ['svg', 'png', 'jpg'])
     if filetype != 'svg':
         st.write(f'The mesh generated from a {filetype} file is not always predictable')
+    
+    # Input file 
+    uploaded_file = st.file_uploader("Upload the file:", type=[filetype])
+    if uploaded_file is not None:
+        # To read file as bytes:
+        bytes_data = uploaded_file.getvalue()
+        with open(f'{cwd}file.{filetype}', 'wb') as f:
+            f.write(bytes_data)
+
+        # convert the png to svg
+        if filetype != 'svg':
+            subprocess.run(f'convert {cwd}file.{filetype} {cwd}file.pnm', shell = True)
+            subprocess.run(f'potrace -s -o {cwd}file.svg {cwd}file.pnm', shell = True)
     
     # SCALE
     scales = [1.0, 1.0]
@@ -103,54 +118,43 @@ if __name__ == "__main__":
     preview = st.checkbox('Quick preview', help='Preview mode renders the models without performing boolean operation. It just renders your image/pattern and the border of the soap dish. It is faster than normal rendering, to understand the scaling of the image.')
     if preview:
         run_file = cwd + 'preview.scad'
-
-    uploaded_file = st.file_uploader("Upload the file:", type=[filetype])
-    if uploaded_file is not None:
-        # To read file as bytes:
-        bytes_data = uploaded_file.getvalue()
-        with open(f'{cwd}file.{filetype}', 'wb') as f:
-            f.write(bytes_data)
-
-        # convert the png to svg
-        if filetype != 'svg':
-            subprocess.run(f'convert {cwd}file.{filetype} {cwd}file.pnm', shell = True)
-            subprocess.run(f'potrace -s -o {cwd}file.svg {cwd}file.pnm', shell = True)
-                            
-        # resize the scale of the svg
-        # read old run file
-        with open(run_file, 'r') as f:
-            text = f.read()
-        # change run file to a scaled one
-        run_file = run_file.replace('.scad', '_run.scad')
-        # replace scales in the openscad template
-        text_replaced = text.replace('X_SCALE', str(scales[0]), 1).replace('Y_SCALE', str(scales[1]), 1).replace('Z_DEG', str(rot))
-        with open(run_file, 'w') as f:
-            f.write(text_replaced)
-        st.write('The program renders with OpenScad, full rendering of a mesh takes a while. If you want to run it faster on your pc, check out the [Github page](https://github.com/lmonari5/soap_dish_3d_pattern.git).')
-        if not st.button('Run'):
-            st.stop()
-        start = time.time()
-        # run openscad
-        with st.spinner('Rendering in progress...'):
-            if preview:
-                subprocess.run(f'xvfb-run -a openscad -o preview.png --camera=0,0,0,0,0,90,250 --projection=ortho {run_file}', shell = True)
-            else:
-                subprocess.run(f'openscad {run_file} -o {cwd}file.stl', shell = True)
-        end = time.time()
-        st.success(f'Rendered in {end-start} seconds', icon="✅")
+                           
+    #PREPARE FILES
+    # resize the scale of the svg
+    # read old run file
+    with open(run_file, 'r') as f:
+        text = f.read()
+    # change run file to a scaled one
+    run_file = run_file.replace('.scad', '_run.scad')
+    # replace scales in the openscad template
+    text_replaced = text.replace('X_SCALE', str(scales[0]), 1).replace('Y_SCALE', str(scales[1]), 1).replace('Z_DEG', str(rot))
+    with open(run_file, 'w') as f:
+        f.write(text_replaced)
+    st.write('The program renders with OpenScad, full rendering of a mesh takes a while. If you want to run it faster on your pc, check out the [Github page](https://github.com/lmonari5/soap_dish_3d_pattern.git).')
+    if not st.button('Run') and uploaded_file:
+        st.stop()
+    start = time.time()
+    # run openscad
+    with st.spinner('Rendering in progress...'):
         if preview:
-            st.write('Preview image:')
-            image = Image.open('preview.png')
-            st.image(image, caption='Openscad preview')
-            image.close()
+            subprocess.run(f'xvfb-run -a openscad -o preview.png --camera=0,0,0,0,0,90,250 --projection=ortho {run_file}', shell = True)
         else:
-            with open(f"{cwd}file.stl", "rb") as file:
-              btn = st.download_button(
-                label="Download mesh",
-                data=file,
-                file_name="soap_dish.stl",
-                mime="model/stl"
-              )
-            st.write('Interactive mesh preview:')
-            st.plotly_chart(figure_mesh(f'{cwd}file.stl'), use_container_width=True)
+            subprocess.run(f'openscad {run_file} -o {cwd}file.stl', shell = True)
+    end = time.time()
+    st.success(f'Rendered in {end-start} seconds', icon="✅")
+    if preview:
+        st.write('Preview image:')
+        image = Image.open('preview.png')
+        st.image(image, caption='Openscad preview')
+        image.close()
+    else:
+        with open(f"{cwd}file.stl", "rb") as file:
+          btn = st.download_button(
+            label="Download mesh",
+            data=file,
+            file_name="soap_dish.stl",
+            mime="model/stl"
+          )
+        st.write('Interactive mesh preview:')
+        st.plotly_chart(figure_mesh(f'{cwd}file.stl'), use_container_width=True)
 
