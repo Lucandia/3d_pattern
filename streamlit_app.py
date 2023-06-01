@@ -84,11 +84,9 @@ if __name__ == "__main__":
     
     # Preview with quick render
     run_file = cwd + 'soap_dish_openscad.scad'
-    scad_args = f'-o {cwd}file.stl'
     preview = st.checkbox('Quick preview', help='Preview mode renders the models without performing boolean operation. It just renders your image/pattern and the border of the soap dish. It is faster than normal rendering, to understand the scaling of the image.')
     if preview:
         run_file = cwd + 'preview.scad'
-        scad_args = f'-o {cwd}preview.png'
 
     uploaded_file = st.file_uploader("Upload the file:", type=[filetype])
     if uploaded_file is not None:
@@ -99,9 +97,10 @@ if __name__ == "__main__":
 
         # convert the png to svg
         if filetype != 'svg':
-            subprocess.run(f'convert {cwd}file.{filetype} {cwd}file.pnm', shell = True)
-            subprocess.run(f'potrace -s -o {cwd}file.svg {cwd}file.pnm', shell = True)
-            subprocess.run(f'rm {cwd}file.pnm', shell = True)
+            subprocess.run([f'convert {cwd}file.{filetype} {cwd}file.pnm'
+                            f'potrace -s -o {cwd}file.svg {cwd}file.pnm',
+                            f'rm {cwd}file.pnm'],
+                            shell = True)
         # resize the scale of the svg
         if scale:
             # read old run file
@@ -119,7 +118,13 @@ if __name__ == "__main__":
         start = time.time()
         # run openscad
         with st.spinner('Rendering in progress...'):
-            subprocess.run(f'openscad {run_file} {scad_args}', shell = True)
+            if preview:
+                subprocess.run(['Xvfb :99 & export DISPLAY=:99',
+                                'b=`basename preview`',
+                                f'openscad -o $b.png --imgsize=500,500 {run_file}'],
+                                shell = True)
+            else:
+                subprocess.run(f'openscad {run_file} -o {cwd}file.stl', shell = True)
         end = time.time()
         st.success(f'Rendered in {end-start} seconds', icon="✅")
         if not preview:
@@ -133,7 +138,7 @@ if __name__ == "__main__":
         st.write('Preview:')
         if preview:
             image = Image.open('preview.png')
-            st.image(image, caption='Openscad preview:')
+            st.image(image, caption='Openscad preview')
         else:
             st.plotly_chart(figure_mesh(f'{cwd}file.stl'), use_container_width=True)
 
