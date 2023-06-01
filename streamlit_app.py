@@ -103,7 +103,19 @@ if __name__ == "__main__":
             scales[0] = scales[0] * st.number_input('X scale %', min_value=0.0, value=100.0) / 100
         with col3:
             scales[1] = scales[1] * st.number_input('Y scale %', min_value=0.0, value=100.0) / 100
-    
+
+    # TRANSLATE
+    tran = [0.0, 0.0]
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        translate = st.checkbox('Translate the image')
+    if translate:
+        with col2:
+            tran[0] = st.number_input('Move X', value=0.0)
+        with col3:
+            tran[1] = st.number_input('Move Y', value=0.0)
+
+
     # ROTATE
     rot = 0
     col1, col2 = st.columns(2)
@@ -114,10 +126,14 @@ if __name__ == "__main__":
             rot = st.number_input('Angle', value=0.0) 
 
     # Preview with quick render
+    col1, col2 = st.columns(2)
     run_file = cwd + 'soap_dish_openscad.scad'
-    preview = st.checkbox('Quick preview', help='Preview mode renders the models without performing boolean operation. It just renders your image/pattern and the border of the soap dish. It is faster than normal rendering, to understand the scaling of the image.')
+    with col1:
+        preview = st.checkbox('Quick preview', help='Preview mode renders the models without performing boolean operation. It just renders your image/pattern and the border of the soap dish. It is faster than normal rendering, to understand the scaling of the image.')
     if preview:
         run_file = cwd + 'preview.scad'
+    with col2:
+        grid = st.checkbox('Add grid', help='Add a background grid to ensure all bodies are attached to the border')
                            
     #PREPARE FILES
     # resize the scale of the svg
@@ -127,11 +143,13 @@ if __name__ == "__main__":
     # change run file to a scaled one
     run_file = run_file.replace('.scad', '_run.scad')
     # replace scales in the openscad template
-    text_replaced = text.replace('X_SCALE', str(scales[0]), 1).replace('Y_SCALE', str(scales[1]), 1).replace('Z_DEG', str(rot))
+    text_replaced = text.replace('X_SCALE', str(scales[0])).replace('Y_SCALE', str(scales[1])).replace('Z_DEG', str(rot)).replace('X_TRAN', str(tran[0])).replace('Y_TRAN', str(tran[1]))
+    if grid:
+        text_replaced = text_replaced.replace('border', 'border_grid')
     with open(run_file, 'w') as f:
         f.write(text_replaced)
     st.write('The program renders with OpenScad, full rendering of a mesh takes a while. If you want to run it faster on your pc, check out the [Github page](https://github.com/lmonari5/soap_dish_3d_pattern.git).')
-    if not st.button('Run') and uploaded_file:
+    if not st.button('Run') or not uploaded_file:
         st.stop()
     start = time.time()
     # run openscad
@@ -141,7 +159,7 @@ if __name__ == "__main__":
         else:
             subprocess.run(f'openscad {run_file} -o {cwd}file.stl', shell = True)
     end = time.time()
-    st.success(f'Rendered in {end-start} seconds', icon="✅")
+    st.success(f'Rendered in {int(end-start)} seconds', icon="✅")
     if preview:
         st.write('Preview image:')
         image = Image.open('preview.png')

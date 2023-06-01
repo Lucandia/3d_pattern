@@ -22,14 +22,16 @@ You can use OpenScad to generate the soap dish. The code is stored in the file '
 union(){ // merge the pattern and the border
   import("YOUR_PATH/border.stl");
     intersection(){ // select the pattern area of the soap dish and make a slope
-      rotate(a=[0,0,Z_DEG]) // rotate the svg image
-        scale([X_SCALE,Y_SCALE,1]) // scale the X and Y axis of the svg
-          linear_extrude(height = 5) // extrude the svg
-            import(file = "YOUR_PATH/YOUR_FILE.svg", center = true);
+      translate(v=[X_TRAN,Y_TRAN,0]) // translate the svg image
+        rotate(a=[0,0,Z_DEG]) // rotate the svg image
+          scale([X_SCALE,Y_SCALE,1]) // scale the X and Y axis of the svg
+            linear_extrude(height = 5) // extrude the svg
+              import(file = "YOUR_PATH/YOUR_FILE.svg", center = true);
     import("YOUR_PATH/intersect_base.stl");
 }}
 ```
 Remember to change:
+- X_TRAN, Y_TRAN with the displacement to move the image
 - Z_DEG with the angle to rotate the image
 - X_SCALE, Y_SCALE with the scale of the x-axis and y-axis 
 - the file paths for 'intersect_base.stl' and 'border.stl' (you can find the files in the Github repository)
