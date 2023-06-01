@@ -1,5 +1,4 @@
 imagemagick
 potrace
 openscad
-Xvfb
-xorg-x11-server-Xvfb
+xvfb
