@@ -1,6 +1,3 @@
-build-essential
-python-dev
-libagg-dev
-libpotrace-dev
-pkg-config
+imagemagick
+potrace
 openscad

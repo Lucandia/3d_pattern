@@ -1,4 +1,5 @@
+subprocess
 numpy
 numpy-stl
 plotly
-pypotrace
+streamlit
