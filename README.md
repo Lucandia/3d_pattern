@@ -6,7 +6,7 @@ Visit the original [Printables page](https://www.printables.com/it/model/489136-
 
 [soap_dish_3d_pattern](https://lmonari5-soap-dish-3d-pattern-streamlit-app-7dcgwp.streamlit.app/) powered by streamlit
 
-[![Streamlit App](https://lmonari5-soap-dish-3d-pattern-streamlit-app-7dcgwp.streamlit.app/)
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://lmonari5-soap-dish-3d-pattern-streamlit-app-7dcgwp.streamlit.app/)
 
 ## Convert png to svg
 
