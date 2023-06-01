@@ -74,7 +74,7 @@ if __name__ == "__main__":
     #       os.remove(file)
     #if 'preview.png' in os.listdir():
     #    os.remove('preview.png')
-    filetype = st.selectbox('Choose the file type', ['svg', 'png', 'jpg', 'jpeg'])
+    filetype = st.selectbox('Choose the file type', ['svg', 'png', 'jpg'])
     if filetype != 'svg':
         st.write(f'The mesh generated from a {filetype} file is not always predictable')
     
