@@ -1,4 +1,3 @@
 imagemagick
 potrace
 openscad
-xvfb
