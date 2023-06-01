@@ -9,8 +9,8 @@ import os
 import time
 
 def stl2mesh3d(stl_mesh):
-    # stl_mesh is read by nympy-stl from a stl file; it is  an array of faces/triangles (i.e. three 3d points)
-    # this function extracts the unique vertices and the lists I, J, K to define a Plotly mesh3d
+    # stl_mesh is read by nympy-stl from an stl file; it is  an array of faces/triangles (i.e. three 3d points)
+    # This function extracts the unique vertices and the lists I, J, K to define a Plotly mesh3d
     p, q, r = stl_mesh.vectors.shape #(p, 3, 3)
     # the array stl_mesh.vectors.reshape(p*q, r) can contain multiple copies of the same vertex;
     # extract unique vertices from all mesh triangles
@@ -65,10 +65,10 @@ def figure_mesh(filename):
 if __name__ == "__main__":
     st.title('Soap Dish 3D Pattern')
     st.write('Generate a 3D model for a custom soap dish! You can find more information about the soap dish here on [Printables](https://www.printables.com/it/model/489136-geometric-soap-dish-holder-normal-with-plate-or-or).')
-    st.write('Note: Make sure are the lines of the image are connected to avoid separeted bodies in the mesh')
+    st.write('Note: Make sure are the lines of the image are connected to avoid separated bodies in the mesh')
     # get files
     cwd = os.getcwd() + os.sep
-    ## clean previous file
+    ## remove previous file
     #for file in os.listdir():
     #    if 'file.' in file:
     #       os.remove(file)
