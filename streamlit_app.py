@@ -161,11 +161,17 @@ if __name__ == "__main__":
     end = time.time()
     st.success(f'Rendered in {int(end-start)} seconds', icon="✅")
     if preview:
+        if 'preview.png' not in os.listdir():
+            st.error('OpenScad was not able to generate the preview', icon="🚨")
+            st.stop()
         st.write('Preview image:')
         image = Image.open('preview.png')
         st.image(image, caption='Openscad preview')
         image.close()
     else:
+        if 'file.stl' not in os.listdir():
+            st.error('OpenScad was not able to generate the mesh', icon="🚨")
+            st.stop()
         with open(f"{cwd}file.stl", "rb") as file:
           btn = st.download_button(
             label="Download mesh",
