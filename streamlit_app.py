@@ -65,23 +65,39 @@ def figure_mesh(filename):
 if __name__ == "__main__":
     st.title('Soap Dish 3D Pattern')
     st.write('Generate a 3D model for a custom soap dish! You can find more information about the soap dish here on [Printables](https://www.printables.com/it/model/489136-geometric-soap-dish-holder-normal-with-plate-or-or).')
+    st.write('Note: Make sure are the lines of the image are connected to avoid separeted bodies in the mesh')
+    # get files
     cwd = os.getcwd() + os.sep
-    for file in os.listdir():
-        if 'file.' in file:
-           os.remove(file)        
+    ## clean previous file
+    #for file in os.listdir():
+    #    if 'file.' in file:
+    #       os.remove(file)
+    #if 'preview.png' in os.listdir():
+    #    os.remove('preview.png')
     filetype = st.selectbox('Choose the file type', ['svg', 'png', 'jpg', 'jpeg'])
     if filetype != 'svg':
         st.write(f'The mesh generated from a {filetype} file is not always predictable')
     
-    scale = st.checkbox('Rescale the x,y size of the image')
-    scales = [0.25, 0.25]
+    # SCALE
+    scales = [1.0, 1.0]
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        scale = st.checkbox('Rescale image size')
     if scale:
-        col1, col2 = st.columns(2)
-        with col1:
-            scales[0] = scales[0] * st.number_input('X scale %', min_value=0, value=100) / 100
         with col2:
-            scales[1] = scales[1] * st.number_input('Y scale %', min_value=0, value=100) / 100
+            scales[0] = scales[0] * st.number_input('X scale %', min_value=0.0, value=100.0) / 100
+        with col3:
+            scales[1] = scales[1] * st.number_input('Y scale %', min_value=0.0, value=100.0) / 100
     
+    # ROTATE
+    rot = 0
+    col1, col2 = st.columns(2)
+    with col1:
+        rotate = st.checkbox('Rotate the image')
+    if rotate:
+        with col2:
+            rot = st.number_input('Angle', value=0.0) 
+
     # Preview with quick render
     run_file = cwd + 'soap_dish_openscad.scad'
     preview = st.checkbox('Quick preview', help='Preview mode renders the models without performing boolean operation. It just renders your image/pattern and the border of the soap dish. It is faster than normal rendering, to understand the scaling of the image.')
@@ -97,37 +113,37 @@ if __name__ == "__main__":
 
         # convert the png to svg
         if filetype != 'svg':
-            subprocess.run([f'convert {cwd}file.{filetype} {cwd}file.pnm'
-                            f'potrace -s -o {cwd}file.svg {cwd}file.pnm',
-                            f'rm {cwd}file.pnm'],
-                            shell = True)
+            subprocess.run(f'convert {cwd}file.{filetype} {cwd}file.pnm', shell = True)
+            subprocess.run(f'potrace -s -o {cwd}file.svg {cwd}file.pnm', shell = True)
+                            
         # resize the scale of the svg
-        if scale:
-            # read old run file
-            with open(run_file, 'r') as f:
-                text = f.read()
-            # change run file to a scaled one
-            run_file = run_file.replace('.scad', '_scaled.scad')
-            # replace scales in the openscad template
-            text_replaced = text.replace('0.25', str(scales[0]), 1).replace('0.25', str(scales[1]), 1)
-            with open(run_file, 'w') as f:
-                f.write(text_replaced)
-        st.write('The program renders with OpenScad, it takes a while. If you want to run it faster on your pc, check out the [Github page](https://github.com/lmonari5/soap_dish_3d_pattern.git).')
+        # read old run file
+        with open(run_file, 'r') as f:
+            text = f.read()
+        # change run file to a scaled one
+        run_file = run_file.replace('.scad', '_run.scad')
+        # replace scales in the openscad template
+        text_replaced = text.replace('X_SCALE', str(scales[0]), 1).replace('Y_SCALE', str(scales[1]), 1).replace('Z_DEG', str(rot))
+        with open(run_file, 'w') as f:
+            f.write(text_replaced)
+        st.write('The program renders with OpenScad, full rendering of a mesh takes a while. If you want to run it faster on your pc, check out the [Github page](https://github.com/lmonari5/soap_dish_3d_pattern.git).')
         if not st.button('Run'):
             st.stop()
         start = time.time()
         # run openscad
         with st.spinner('Rendering in progress...'):
             if preview:
-                subprocess.run(['Xvfb :99 -ac -nolisten tcp -nolisten unix & export DISPLAY=:99',
-                                'b=`basename preview`',
-                                f'openscad -o $b.png {run_file}'],
-                                shell = True)
+                subprocess.run(f'xvfb-run -a openscad -o preview.png --camera=0,0,0,0,0,90,250 --projection=ortho {run_file}', shell = True)
             else:
                 subprocess.run(f'openscad {run_file} -o {cwd}file.stl', shell = True)
         end = time.time()
         st.success(f'Rendered in {end-start} seconds', icon="✅")
-        if not preview:
+        if preview:
+            st.write('Preview image:')
+            image = Image.open('preview.png')
+            st.image(image, caption='Openscad preview')
+            image.close()
+        else:
             with open(f"{cwd}file.stl", "rb") as file:
               btn = st.download_button(
                 label="Download mesh",
@@ -135,10 +151,6 @@ if __name__ == "__main__":
                 file_name="soap_dish.stl",
                 mime="model/stl"
               )
-        st.write('Preview:')
-        if preview:
-            image = Image.open('preview.png')
-            st.image(image, caption='Openscad preview')
-        else:
+            st.write('Interactive mesh preview:')
             st.plotly_chart(figure_mesh(f'{cwd}file.stl'), use_container_width=True)
 
