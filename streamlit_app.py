@@ -119,7 +119,7 @@ if __name__ == "__main__":
         # run openscad
         with st.spinner('Rendering in progress...'):
             if preview:
-                subprocess.run(['Xvfb :99 & export DISPLAY=:99 -nolisten unix',
+                subprocess.run(['Xvfb :99 -nolisten unix & export DISPLAY=:99',
                                 'b=`basename preview`',
                                 f'openscad -o $b.png {run_file}'],
                                 shell = True)
