@@ -1,12 +1,12 @@
 # Soap Dish 3D Pattern
 A simple interface to generate soap dishes for 3D printing
-Visit the original [Printables page](https://www.printables.com/it/model/489136-geometric-soap-dish-holder-normal-with-plate-or-or)
+Visit the original [Printables page](https://www.printables.com/it/model/489136-geometric-soap-dish-holder-normal-with-plate-or-or)!
 
 ## Try the web app:
 
-[soap_dish_3d_pattern](https://lmonari5-soap-dish-3d-pattern-streamlit-app-7dcgwp.streamlit.app/) powered by streamlit
+[soap_dish_3d_pattern](https://lmonari5-soap-dish-3d-pattern.streamlit.app/) powered by streamlit
 
-[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://lmonari5-soap-dish-3d-pattern-streamlit-app-7dcgwp.streamlit.app/)
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://lmonari5-soap-dish-3d-pattern.streamlit.app/)
 
 ## Convert png to svg
 
