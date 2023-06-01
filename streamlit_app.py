@@ -68,12 +68,12 @@ if __name__ == "__main__":
     st.write('Note: Make sure are the lines of the image are connected to avoid separated bodies in the mesh')
     # get files
     cwd = os.getcwd() + os.sep
-    ## remove previous file
-    #for file in os.listdir():
-    #    if 'file.' in file:
-    #       os.remove(file)
-    #if 'preview.png' in os.listdir():
-    #    os.remove('preview.png')
+    # remove previous file
+    for file in os.listdir():
+        if 'file.' in file:
+           os.remove(file)
+    if 'preview.png' in os.listdir():
+        os.remove('preview.png')
     
     # Input type 
     filetype = st.selectbox('Choose the file type', ['svg', 'png', 'jpg'])
