@@ -85,7 +85,7 @@ if __name__ == "__main__":
     # Preview with quick render
     run_file = cwd + 'soap_dish_openscad.scad'
     scad_args = f'-o {cwd}file.stl'
-    preview = st.checkbox('Quick render', help='Preview mode renders the models without performing boolean operation. It just renders your image/pattern and the border of the soap dish. It is faster than normal rendering, to understand the scaling of the image.')
+    preview = st.checkbox('Quick preview', help='Preview mode renders the models without performing boolean operation. It just renders your image/pattern and the border of the soap dish. It is faster than normal rendering, to understand the scaling of the image.')
     if preview:
         run_file = cwd + 'preview.scad'
         scad_args = f'-o {cwd}preview.png'
@@ -120,7 +120,7 @@ if __name__ == "__main__":
         # run openscad
         if preview:
             subprocess.run('export DISPLAY=:2', shell=True)
-            subprocess.run('Xvfb :2 -screen 0 800x600x24 &> xvfb.log &', shell=True)
+            subprocess.run('Xvfb :2 -screen 0 800x600x24 -nolisten tcp -nolisten unix &> xvfb.log &', shell=True)
         with st.spinner('Rendering in progress...'):
             subprocess.run(f'openscad {run_file} {scad_args}', shell = True)
         end = time.time()
