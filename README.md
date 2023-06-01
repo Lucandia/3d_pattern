@@ -28,10 +28,10 @@ union(){ // merge the pattern and the border
             import(file = "YOUR_PATH/YOUR_FILE.svg", center = true);
     import("YOUR_PATH/intersect_base.stl");
 }}
-
+```
 Remember to change:
 - Z_DEG with the angle to rotate the image
-- X_SCALE,Y_SCALE with the scale of the x axis and y axis 
+- X_SCALE, Y_SCALE with the scale of the x-axis and y-axis 
 - the file paths for 'intersect_base.stl' and 'border.stl' (you can find the files in the Github repository)
 - the file path for your svg file.
 
