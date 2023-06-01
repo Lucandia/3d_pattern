@@ -120,7 +120,7 @@ if __name__ == "__main__":
         # run openscad
         if preview:
             subprocess.run('export DISPLAY=:2', shell=True)
-            subprocess.run('Xvfb :2 -screen 0 800x600x24 -nolisten tcp -nolisten unix &> xvfb.log &', shell=True)
+            subprocess.run('sudo Xvfb :2 -screen 0 800x600x24 &> xvfb.log &', shell=True)
         with st.spinner('Rendering in progress...'):
             subprocess.run(f'openscad {run_file} {scad_args}', shell = True)
         end = time.time()
