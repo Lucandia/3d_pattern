@@ -4,9 +4,9 @@ Visit the original [Printables page](https://www.printables.com/it/model/489136-
 
 ## Try the web app:
 
-[soap_dish_3d_pattern](https://lmonari5-soap-dish-3d-pattern.streamlit.app/) powered by streamlit
+[3d_pattern](https://lmonari5-3d-pattern.streamlit.app/) powered by streamlit
 
-[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://lmonari5-soap-dish-3d-pattern.streamlit.app/)
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://lmonari5-3d-pattern.streamlit.app/)
 
 ## Convert png to svg
 
