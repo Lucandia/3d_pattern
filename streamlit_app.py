@@ -75,10 +75,14 @@ if __name__ == "__main__":
     if 'preview.png' in os.listdir():
         os.remove('preview.png')
     
+    col1, col2 = st.columns(2)
     # Input type 
-    filetype = st.selectbox('Choose the file type', ['svg', 'png', 'jpg', 'jpeg'])
-    if filetype != 'svg':
-        st.write(f'The mesh generated from a {filetype} file is not always predictable')
+    with col1:
+        filetype = st.selectbox('Choose the file type', ['svg', 'png', 'jpg'])
+        if filetype != 'svg':
+            st.write(f'The mesh generated from a {filetype} file is not always predictable')
+    with col2:
+        shape = st.selectbox = ('Choose the dish shape', ['oval', 'square', 'rectangular'])
     
     # Input file 
     uploaded_file = st.file_uploader("Upload the file:", type=[filetype])
@@ -129,7 +133,7 @@ if __name__ == "__main__":
             rot = st.number_input('Angle', value=0.0) 
 
     # Preview with quick render
-    col1, col2 = st.columns(2)
+    col1, col2 = st.columns(3)
     run_file = cwd + 'soap_dish_openscad.scad'
     with col1:
         preview = st.checkbox('Quick preview', help='Preview mode renders the models without performing boolean operation. It just renders your image/pattern and the border of the soap dish. It is faster than normal rendering, to understand the scaling of the image.')
@@ -137,6 +141,11 @@ if __name__ == "__main__":
         run_file = cwd + 'preview.scad'
     with col2:
         grid = st.checkbox('Add grid', help='Add a background grid to ensure all bodies are attached to the border')
+    with col3:
+        flat = 'base'
+        flatten = st.checkbox('Flat surface', help='Produce a fully fat surface instead of the normal slope')
+        if flatten:
+            flat = 'base_flat'
                            
     #PREPARE FILES
     # resize the scale of the svg
@@ -146,7 +155,7 @@ if __name__ == "__main__":
     # change run file to a scaled one
     run_file = run_file.replace('.scad', '_run.scad')
     # replace scales in the openscad template
-    text_replaced = text.replace('X_SCALE', str(scales[0])).replace('Y_SCALE', str(scales[1])).replace('Z_DEG', str(rot)).replace('X_TRAN', str(tran[0])).replace('Y_TRAN', str(tran[1]))
+    text_replaced = text.replace('X_SCALE', str(scales[0])).replace('Y_SCALE', str(scales[1])).replace('Z_DEG', str(rot)).replace('X_TRAN', str(tran[0])).replace('Y_TRAN', str(tran[1])).replace('DIR', shape).replace('base', flat)
     if grid:
         text_replaced = text_replaced.replace('border', 'border_grid')
     with open(run_file, 'w') as f:
