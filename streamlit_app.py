@@ -63,7 +63,7 @@ def figure_mesh(filename):
   return fig
 
 if __name__ == "__main__":
-    st.title('Soap Dish 3D Pattern')
+    st.title('3D Pattern')
     st.write('Generate a 3D model for a custom soap dish! You can find more information about the soap dish here on [Printables](https://www.printables.com/it/model/489136-geometric-soap-dish-holder-normal-with-plate-or-or).')
     st.write('Note: Make sure are the lines of the image are connected to avoid separated bodies in the mesh')
     # get files
@@ -161,7 +161,7 @@ if __name__ == "__main__":
     text_replaced = text.replace('X_SCALE', str(scales[0])).replace('Y_SCALE', str(scales[1])).replace('Z_DEG', str(rot)).replace('X_TRAN', str(tran[0])).replace('Y_TRAN', str(tran[1])).replace('DIR', shape).replace('base', base).replace('border', border)
     with open(run_file, 'w') as f:
         f.write(text_replaced)
-    st.write('The program renders with OpenScad, full rendering of a mesh takes a while. If you want to run it faster on your pc, check out the [Github page](https://github.com/lmonari5/soap_dish_3d_pattern.git).')
+    st.write('The program renders with OpenScad, full rendering of a mesh takes a while. If you want to run it faster on your pc, check out the [Github page](https://github.com/lmonari5/3d_pattern.git).')
 
     # Stop the run when no file is uploaded
     if not uploaded_file:
@@ -201,7 +201,7 @@ if __name__ == "__main__":
           btn = st.download_button(
             label="Download mesh",
             data=file,
-            file_name="soap_dish.stl",
+            file_name="dish.stl",
             mime="model/stl"
           )
         st.write('Interactive mesh preview:')
