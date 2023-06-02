@@ -88,7 +88,10 @@ if __name__ == "__main__":
         with open(f'{cwd}file.{filetype}', 'wb') as f:
             f.write(bytes_data)
 
-        # convert the png to svg
+        # avoid transparency in PNG, replace it with white
+        if filetype == 'png':
+            subprocess.run(f'convert {cwd}file.{filetype} -background white -alpha remove -alpha off {cwd}file.{filetype}', shell = True)
+        # convert the img to svg
         if filetype != 'svg':
             subprocess.run(f'convert {cwd}file.{filetype} {cwd}file.pnm', shell = True)
             subprocess.run(f'potrace -s -o {cwd}file.svg {cwd}file.pnm', shell = True)
