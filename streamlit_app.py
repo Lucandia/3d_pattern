@@ -138,12 +138,17 @@ if __name__ == "__main__":
     if preview:
         run_file = cwd + 'preview.scad'
     with col2:
+        border = 'border'
         grid = st.checkbox('Add grid', help='Add a background grid to ensure all bodies are attached to the border')
+        if grid:
+            border = 'border_grid'
     with col3:
-        flat = 'base'
-        flatten = st.checkbox('Flat surface', help='Produce a fully fat surface instead of the normal slope')
-        if flatten:
-            flat = 'base_flat'
+        base = 'base'
+        flat = st.checkbox('Flat surface', help='Produce a fully fat surface instead of the normal slope')
+        if flat:
+            base = 'base_flat'
+            if grid:
+                border = 'border_grid_flat'
                            
     #PREPARE FILES
     # resize the scale of the svg
@@ -153,23 +158,33 @@ if __name__ == "__main__":
     # change run file to a scaled one
     run_file = run_file.replace('.scad', '_run.scad')
     # replace scales in the openscad template
-    text_replaced = text.replace('X_SCALE', str(scales[0])).replace('Y_SCALE', str(scales[1])).replace('Z_DEG', str(rot)).replace('X_TRAN', str(tran[0])).replace('Y_TRAN', str(tran[1])).replace('DIR', shape).replace('base', flat)
-    if grid:
-        text_replaced = text_replaced.replace('border', 'border_grid')
+    text_replaced = text.replace('X_SCALE', str(scales[0])).replace('Y_SCALE', str(scales[1])).replace('Z_DEG', str(rot)).replace('X_TRAN', str(tran[0])).replace('Y_TRAN', str(tran[1])).replace('DIR', shape).replace('base', base).replace('border', border)
     with open(run_file, 'w') as f:
         f.write(text_replaced)
     st.write('The program renders with OpenScad, full rendering of a mesh takes a while. If you want to run it faster on your pc, check out the [Github page](https://github.com/lmonari5/soap_dish_3d_pattern.git).')
-    if not st.button('Run') or not uploaded_file:
+
+    # Stop the run when no file is uploaded
+    if not uploaded_file:
         st.stop()
-    start = time.time()
-    # run openscad
-    with st.spinner('Rendering in progress...'):
+    else:
+        # if the file is uploaded and there is a preview: run the preview
         if preview:
-            subprocess.run(f'xvfb-run -a openscad -o preview.png --camera=0,0,0,0,0,0,300 --autocenter --viewall  --projection=ortho {run_file}', shell = True)
+            pass
+        # if the fileis up, but there is no preview, display the button 'Run'
         else:
+            if not st.button('Run'):
+             st.stop()
+    
+    if preview:
+        subprocess.run(f'xvfb-run -a openscad -o preview.png --camera=0,0,0,0,0,0,300 --autocenter --viewall  --projection=ortho {run_file}', shell = True)
+    else:
+        start = time.time()
+        # run openscad
+        with st.spinner('Rendering in progress...'):    
             subprocess.run(f'openscad {run_file} -o {cwd}file.stl', shell = True)
-    end = time.time()
-    st.success(f'Rendered in {int(end-start)} seconds', icon="✅")
+        end = time.time()
+        st.success(f'Rendered in {int(end-start)} seconds', icon="✅")
+
     if preview:
         if 'preview.png' not in os.listdir():
             st.error('OpenScad was not able to generate the preview', icon="🚨")
