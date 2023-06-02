@@ -79,10 +79,8 @@ if __name__ == "__main__":
     # Input type 
     with col1:
         filetype = st.selectbox('Choose the file type', ['svg', 'png', 'jpg'])
-        if filetype != 'svg':
-            st.write(f'The mesh generated from a {filetype} file is not always predictable')
     with col2:
-        shape = st.selectbox = ('Choose the dish shape', ['oval', 'square', 'rectangular'])
+        shape = st.selectbox('Choose the dish shape', ['oval', 'square', 'rectangular'])
     
     # Input file 
     uploaded_file = st.file_uploader("Upload the file:", type=[filetype])
@@ -133,7 +131,7 @@ if __name__ == "__main__":
             rot = st.number_input('Angle', value=0.0) 
 
     # Preview with quick render
-    col1, col2 = st.columns(3)
+    col1, col2, col3 = st.columns(3)
     run_file = cwd + 'soap_dish_openscad.scad'
     with col1:
         preview = st.checkbox('Quick preview', help='Preview mode renders the models without performing boolean operation. It just renders your image/pattern and the border of the soap dish. It is faster than normal rendering, to understand the scaling of the image.')
@@ -167,7 +165,7 @@ if __name__ == "__main__":
     # run openscad
     with st.spinner('Rendering in progress...'):
         if preview:
-            subprocess.run(f'xvfb-run -a openscad -o preview.png --camera=0,0,0,0,0,90,250 --projection=ortho {run_file}', shell = True)
+            subprocess.run(f'xvfb-run -a openscad -o preview.png --camera=0,0,0,0,0,0,300 --autocenter --viewall  --projection=ortho {run_file}', shell = True)
         else:
             subprocess.run(f'openscad {run_file} -o {cwd}file.stl', shell = True)
     end = time.time()
