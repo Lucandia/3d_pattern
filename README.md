@@ -1,4 +1,4 @@
-# Soap Dish 3D Pattern
+# 3D Pattern
 A simple interface to generate soap dishes for 3D printing
 Visit the original [Printables page](https://www.printables.com/it/model/489136-geometric-soap-dish-holder-normal-with-plate-or-or)!
 
