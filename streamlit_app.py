@@ -8,6 +8,10 @@ from PIL import Image
 import os
 import time
 
+def create_download_link(val, filename):
+    b64 = base64.b64encode(val)
+    return f'<a href="data:application/octet-stream;base64,{b64.decode()}" download="{filename}.stl">Download mesh</a>'
+
 def stl2mesh3d(stl_mesh):
     # stl_mesh is read by nympy-stl from an stl file; it is  an array of faces/triangles (i.e. three 3d points)
     # This function extracts the unique vertices and the lists I, J, K to define a Plotly mesh3d
@@ -198,12 +202,9 @@ if __name__ == "__main__":
             st.error('OpenScad was not able to generate the mesh', icon="🚨")
             st.stop()
         with open(f"{cwd}file.stl", "rb") as file:
-          btn = st.download_button(
-            label="Download mesh",
-            data=file,
-            file_name="dish.stl",
-            mime="model/stl"
-          )
+            html = create_download_link(file.read(), "dish")
+            st.markdown("Please, put a like [on Printables](https://www.printables.com/it/model/489136-customizable-soap-sponge-dish-holder-normal-with-p) to support the project!", unsafe_allow_html=True)
+            st.markdown(html, unsafe_allow_html=True)
         st.write('Interactive mesh preview:')
         st.plotly_chart(figure_mesh(f'{cwd}file.stl'), use_container_width=True)
 
