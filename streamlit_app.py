@@ -7,6 +7,7 @@ import streamlit as st
 from PIL import Image
 import os
 import time
+import base64 # to download from html link
 
 def create_download_link(val, filename):
     b64 = base64.b64encode(val)
