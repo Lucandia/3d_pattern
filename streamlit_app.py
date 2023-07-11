@@ -83,7 +83,7 @@ if __name__ == "__main__":
     col1, col2 = st.columns(2)
     # Input type 
     with col1:
-        filetype = st.selectbox('Choose the file type', ['svg', 'png', 'jpg', 'jpeg'])
+        filetype = st.selectbox('Choose the file type', ['png', 'svg', 'jpg', 'jpeg'])
     with col2:
         shape = st.selectbox('Choose the dish shape', ['oval', 'square', 'rectangular'])
     
