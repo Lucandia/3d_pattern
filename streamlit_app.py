@@ -147,7 +147,7 @@ if __name__ == "__main__":
 
     preview = True
     run_file = cwd + 'preview.scad'
-    if st.button('Run'):
+    if st.button('Render'):
         preview = False
         run_file = cwd + 'soap_dish_openscad.scad'
 
