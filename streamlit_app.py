@@ -114,34 +114,12 @@ if __name__ == "__main__":
         with col3:
             scales[1] = scales[1] * st.number_input('Y scale %', min_value=0.0, value=100.0) / 100
 
-    # TRANSLATE
+    # TRANSLATE/ROTATE
     tran = [0.0, 0.0]
-    col1, col2, col3 = st.columns(3)
-    with col1:
-        translate = st.checkbox('Translate the image')
-    if translate:
-        with col2:
-            tran[0] = st.number_input('Move X', value=0.0)
-        with col3:
-            tran[1] = st.number_input('Move Y', value=0.0)
-
-
-    # ROTATE
     rot = 0
-    col1, col2 = st.columns(2)
-    with col1:
-        rotate = st.checkbox('Rotate the image')
-    if rotate:
-        with col2:
-            rot = st.number_input('Angle', value=0.0) 
-
-    # Preview with quick render
     col1, col2, col3 = st.columns(3)
-    run_file = cwd + 'soap_dish_openscad.scad'
     with col1:
-        preview = st.checkbox('Quick preview', help='Preview mode renders the models without performing boolean operation. It just renders your image/pattern and the border of the soap dish. It is faster than normal rendering, to understand the scaling of the image.')
-    if preview:
-        run_file = cwd + 'preview.scad'
+        trans_rot = st.checkbox('Translate/Rotate the image')
     with col2:
         border = 'border'
         grid = st.checkbox('Add grid', help='Add a background grid to ensure all bodies are attached to the border')
@@ -154,6 +132,30 @@ if __name__ == "__main__":
             base = 'base_flat'
             if grid:
                 border = 'border_grid_flat'
+
+    if trans_rot:
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            rot = st.number_input('Angle', value=0.0)
+        with col2:
+            tran[0] = st.number_input('Move X', value=0.0)
+        with col3:
+            tran[1] = st.number_input('Move Y', value=0.0)
+
+
+
+
+    preview = True
+    run_file = cwd + 'preview.scad'
+    if st.button('Run'):
+        preview = False
+        run_file = cwd + 'soap_dish_openscad.scad'
+
+    # Stop the run when no file is uploaded
+    if not uploaded_file:
+        st.write('Upload an image!')
+        st.stop()
+
                            
     #PREPARE FILES
     # resize the scale of the svg
@@ -167,18 +169,6 @@ if __name__ == "__main__":
     with open(run_file, 'w') as f:
         f.write(text_replaced)
     st.write('The program renders with OpenScad, full rendering of a mesh takes a while. If you want to run it faster on your pc, check out the [Github page](https://github.com/lmonari5/3d_pattern.git).')
-
-    # Stop the run when no file is uploaded
-    if not uploaded_file:
-        st.stop()
-    else:
-        # if the file is uploaded and there is a preview: run the preview
-        if preview:
-            pass
-        # if the fileis up, but there is no preview, display the button 'Run'
-        else:
-            if not st.button('Run'):
-             st.stop()
     
     if preview:
         subprocess.run(f'xvfb-run -a openscad -o preview.png --camera=0,0,0,0,0,0,300 --autocenter --viewall  --projection=ortho {run_file}', shell = True)
